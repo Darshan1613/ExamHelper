@@ -13,7 +13,7 @@ const quoteText = document.getElementById('quote-text'); // For motivational quo
 const API_URL =
     window.location.hostname === 'localhost'
         ? 'http://localhost:3000' // Local testing
-        : 'https://https://exam-backend-bbz2hcpzl-darshan1613s-projects.vercel.ap'; // Deployed backend
+        : 'https://https://exam-helper-1rxi.vercel.app/'; // Deployed backend
 
 // Fetch a motivational quote from GPT API
 const fetchMotivationalQuote = async () => {
