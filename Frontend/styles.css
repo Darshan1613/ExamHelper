@@ -1,0 +1,325 @@
+/* General Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(145deg, #eef2f3, #d6e0f0);
+    color: #333;
+}
+
+/* Lock Screen */
+#lock-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+#lock-screen h1 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.helper-text {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* PIN Inputs */
+.pin-inputs {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.pin-box {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+    transition: all 0.3s ease-in-out;
+}
+
+.pin-box:focus {
+    border-color: #4caf50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+    outline: none;
+}
+
+/* Button Updates */
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background-color: #4caf50;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.02);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Error Message */
+.error-message {
+    color: #d9534f;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Chat Interface */
+#chat-interface {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 90vh;
+    width: 100%;
+    max-width: 700px;
+    background: rgba(30, 30, 47, 0.9);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Chat Header */
+#chat-interface header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#chat-interface header h2 {
+    font-size: 1.5rem;
+    color: #f0a500;
+}
+
+#chat-interface header p {
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+/* Quotes Section in Chat Interface */
+#chat-interface #quote-section {
+    width: 100%;
+    text-align: center;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+#chat-interface #quote-text {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #ffffff;
+    line-height: 1.5;
+    word-wrap: break-word;
+    margin: 0;
+}
+
+/* Chat Box */
+#chat-box {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 16px;
+    background: rgba(30, 30, 47, 0.8);
+    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Chat Bubbles */
+.message {
+    display: flex;
+    align-items: flex-start;
+    max-width: 100%;
+}
+
+.message.user-message {
+    flex-direction: row-reverse;
+}
+
+.message-content {
+    padding: 12px 18px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    word-break: break-word;
+    line-height: 1.5;
+    max-width: 75%; /* Restricts bubble width */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.user-message .message-content {
+    background-color: #4caf50;
+    color: white;
+}
+
+.bot-message .message-content {
+    background-color: #444;
+    color: #eee;
+}
+
+/* Profile Icons for Messages */
+.message img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.message.user-message img {
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+/* Code Snippets */
+.code-snippet {
+    background: #1e1e1e;
+    color: #dcdcdc;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 10px;
+    border-radius: 8px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-top: 10px;
+}
+
+/* Footer Input Section */
+.input-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(30, 30, 47, 0.9);
+    padding: 10px;
+    border-radius: 0 0 16px 16px;
+}
+
+.input-area input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+    background: rgba(50, 50, 60, 0.8);
+    color: #fff;
+    font-size: 0.95rem;
+    outline: none;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.input-area input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.input-area button {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(145deg, #4caf50, #5fcf6b);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.input-area button:hover {
+    background: linear-gradient(145deg, #45a049, #57d663);
+}
+
+/* Loader Styles */
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #4caf50;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Scroll Bar Styling for Chat Box */
+#chat-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+#chat-box::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 5px;
+}
+
+#chat-box::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #chat-interface {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    #chat-interface #quote-section {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    #chat-box {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .message-content {
+        font-size: 0.9rem;
+        max-width: 90%;
+    }
+
+    .input-area input {
+        font-size: 0.8rem;
+        padding: 10px;
+    }
+
+    .input-area button {
+        width: 40px;
+        height: 40px;
+    }
+}

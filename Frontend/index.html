@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Helper Chat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Lock Screen -->
+        <div id="lock-screen" class="active">
+            <h1>Enter Your PIN</h1>
+            <p class="helper-text">Please enter your 4-digit PIN to access the chat assistant.</p>
+            <div class="pin-inputs">
+                <input type="text" maxlength="1" class="pin-box" id="pin-1" autofocus>
+                <input type="text" maxlength="1" class="pin-box" id="pin-2">
+                <input type="text" maxlength="1" class="pin-box" id="pin-3">
+                <input type="text" maxlength="1" class="pin-box" id="pin-4">
+            </div>
+            <button id="unlock-btn">Unlock</button>
+            <p id="pin-error" class="error-message"></p>
+        </div>
+
+        <!-- Chat Interface -->
+        <div id="chat-interface">
+            <!-- Quote Section -->
+            <div id="quote-section">
+                <p id="quote-text">"Loading inspirational quote..."</p>
+            </div>
+
+            <header>
+                <h2>Exam Helper Chat</h2>
+                <p>Your AI assistant for exam preparation</p>
+            </header>
+            <div id="chat-box">
+                <!-- Messages will appear here -->
+            </div>
+            <footer class="input-area">
+                <input type="text" id="message-input" placeholder="Type your message here...">
+                <button id="send-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="24px" height="24px">
+                        <path d="M2 21l21-9L2 3v7l15 2-15 2z" />
+                    </svg>
+                </button>
+            </footer>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
