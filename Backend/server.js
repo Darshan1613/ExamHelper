@@ -6,7 +6,7 @@ const OpenAI = require('openai');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors()); // Allow all origins
 
 const lockCode = "1234"; // Replace this with your chosen 4-digit code
 let chatHistory = []; // Array to store chat history
