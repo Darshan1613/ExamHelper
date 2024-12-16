@@ -9,16 +9,10 @@ const messageInput = document.getElementById('message-input');
 const chatBox = document.getElementById('chat-box');
 const quoteText = document.getElementById('quote-text'); // For motivational quotes
 
-// Backend API URL
-const API_URL =
-    window.location.hostname === 'localhost'
-        ? 'http://localhost:3000' // Local testing
-        : 'https://https://exam-helper-1rxi.vercel.app/'; // Deployed backend
-
 // Fetch a motivational quote from GPT API
 const fetchMotivationalQuote = async () => {
     try {
-        const response = await fetch(`${API_URL}/generate-quote`, {
+        const response = await fetch('http://localhost:3000/generate-quote', {
             method: 'GET',
         });
         const data = await response.json();
@@ -97,7 +91,7 @@ const sendMessage = async () => {
     messageInput.value = '';
 
     try {
-        const response = await fetch(`${API_URL}/chat`, {
+        const response = await fetch('http://localhost:3000/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message })
@@ -151,11 +145,9 @@ const addMessage = (sender, content) => {
     } else {
         // Render as plain HTML text
         if (content.length > 500) {
-            const shortContent = content.slice(0, 500);
-            messageContent.innerHTML = `${shortContent}... <a href="#" class="read-more">Read more</a>`;
-        } else {
-            messageContent.innerHTML = content;
+            content = content.slice(0, 500) + '...'; // Truncate long messages
         }
+        messageContent.innerHTML = content;
     }
 
     messageDiv.appendChild(avatar);
