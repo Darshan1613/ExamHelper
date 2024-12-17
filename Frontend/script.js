@@ -52,21 +52,33 @@ unlockBtn.addEventListener('click', () => {
 });
 
 // Send Message
+let isAIGenerating = false;
+
+const showTypingIndicator = () => {
+    const indicator = document.createElement('div');
+    indicator.classList.add('message', 'bot-message', 'typing-indicator');
+    indicator.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+    `;
+    chatBox.appendChild(indicator);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return indicator;
+};
+
 const sendMessage = async () => {
     const userMessage = messageInput.value.trim();
-    if (!userMessage) return;
+    if (!userMessage || isAIGenerating) return;
 
-    appendMessage('user', userMessage); // Add user message to chat
+    appendMessage('user', userMessage);
     messageInput.value = '';
 
-    // Show loading indicator
-    const loader = document.createElement('div');
-    loader.classList.add('message', 'bot-message');
-    loader.innerHTML = `<div class="loader"></div>`;
-    chatBox.appendChild(loader);
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    sendBtn.disabled = true; // Disable send button while processing
+    // Show typing indicator and disable send button
+    isAIGenerating = true;
+    sendBtn.disabled = true;
+    sendBtn.classList.add('loading');
+    const typingIndicator = showTypingIndicator();
 
     try {
         const response = await fetch(`${API_URL}/chat`, {
@@ -76,14 +88,16 @@ const sendMessage = async () => {
         });
 
         const data = await response.json();
-        chatBox.removeChild(loader); // Remove loader
-        displayResponse(data.response); // Process the response parts
+        chatBox.removeChild(typingIndicator);
+        displayResponse(data.response);
     } catch (error) {
-        chatBox.removeChild(loader); // Remove loader
+        chatBox.removeChild(typingIndicator);
         appendMessage('bot', 'Oops! Something went wrong.');
         console.error('Error:', error);
     } finally {
-        sendBtn.disabled = false; // Re-enable send button
+        isAIGenerating = false;
+        sendBtn.disabled = false;
+        sendBtn.classList.remove('loading');
     }
 };
 
@@ -166,5 +180,7 @@ const appendTable = (tableHtml) => {
 // Event Listeners for Sending Messages
 sendBtn.addEventListener('click', sendMessage);
 messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
+    if (e.key === 'Enter' && !isAIGenerating) {
+        sendMessage();
+    }
 });
