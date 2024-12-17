@@ -164,22 +164,23 @@ const appendMessage = (sender, content) => {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
 
+    const messageContent = document.createElement('div');
+    messageContent.classList.add('message-content');
+    messageContent.innerHTML = formatBotMessage(content);
+
     const avatar = document.createElement('img');
     avatar.src = sender === 'user' ? 'user-icon.png' : 'bot-icon.png';
     avatar.alt = sender;
+    avatar.classList.add(sender === 'user' ? 'user-avatar' : 'bot-avatar');
 
-    const messageContent = document.createElement('div');
-    messageContent.classList.add('message-content');
-    
-    // Apply formatting for bot messages
-    if (sender === 'bot') {
-        messageContent.innerHTML = formatBotMessage(content);
+    if (sender === 'user') {
+        messageDiv.appendChild(messageContent);
+        messageDiv.appendChild(avatar);
     } else {
-        messageContent.textContent = content;
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(messageContent);
     }
 
-    messageDiv.appendChild(avatar);
-    messageDiv.appendChild(messageContent);
     chatBox.appendChild(messageDiv);
     chatBox.scrollTop = chatBox.scrollHeight;
 };

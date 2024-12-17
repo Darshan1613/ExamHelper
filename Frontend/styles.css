@@ -158,17 +158,18 @@ button:active {
     display: flex;
     align-items: flex-start;
     max-width: 90%;
-    margin: 0 10px;
+    margin: 8px 10px;
+    gap: 8px;
 }
 
 .message.user-message {
-    flex-direction: row-reverse;
-    align-self: flex-end; /* Align user messages to the right */
-    text-align: right;
+    flex-direction: row;
+    align-self: flex-end;
 }
 
 .message.bot-message {
-    align-self: flex-start; /* Align bot messages to the left */
+    flex-direction: row;
+    align-self: flex-start;
 }
 
 .message-content {
@@ -179,6 +180,9 @@ button:active {
     word-wrap: break-word;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     max-width: 60%;
+    margin: 0; /* Remove any default margins */
+    flex: 1;
+    order: 1;
 }
 
 .user-message .message-content {
@@ -186,6 +190,7 @@ button:active {
     color: white;
     border-bottom-right-radius: 0;
     margin-left: auto;
+    order: 1;
 }
 
 .bot-message .message-content {
@@ -201,6 +206,74 @@ button:active {
     border-left: 4px solid #4caf50;
     line-height: 1.6;
     font-size: 1rem;
+}
+
+/* Enhanced User Message Styling */
+.user-message .message-content {
+    background-color: #1a472a;
+    border-right: 4px solid #2d8a3e;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* User Message Specific Styles */
+.user-message .paragraph {
+    text-align: left;
+}
+
+.user-message .emphasis {
+    color: #7de1ac;
+}
+
+.user-message .bot-list {
+    text-align: left;
+    margin: 8px 0 8px 0;
+    padding-right: 15px;
+}
+
+.user-message .bot-list li::before {
+    color: #7de1ac;
+}
+
+.user-message .heading-1,
+.user-message .heading-2,
+.user-message .heading-3 {
+    color: #7de1ac;
+    text-align: left;
+}
+
+.user-message .key-point {
+    border-left: none;
+    border-right: 3px solid #ffd700;
+    text-align: left;
+}
+
+.user-message .definition {
+    border-left: none;
+    border-right: 3px solid #64b5f6;
+    text-align: left;
+}
+
+.user-message .example {
+    border-left: none;
+    border-right: 3px solid #ba68c8;
+    text-align: left;
+}
+
+.user-message .quote {
+    border-left: none;
+    border-right: 3px solid #9e9e9e;
+    text-align: left;
+}
+
+/* Adjust margins for user message elements */
+.user-message .key-point,
+.user-message .definition,
+.user-message .example,
+.user-message .quote,
+.user-message .important-point {
+    margin: 8px 0;
+    text-align: left;
 }
 
 /* Structured Content Formatting */
@@ -397,15 +470,25 @@ button:active {
 
 /* Profile Icons */
 .message img {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    margin-right: 10px;
+    flex-shrink: 0;
+    margin: 4px 0;
 }
 
-.message.user-message img {
-    margin-left: 10px;
-    margin-right: 0;
+.message.user-message img,
+.message.bot-message img {
+    margin: 4px 0;
+}
+
+.user-avatar {
+    order: 2;
+    margin-left: 8px;
+}
+
+.bot-avatar {
+    margin-right: 8px;
 }
 
 /* Input Area */
@@ -475,6 +558,22 @@ button:active {
     .expand-button {
         font-size: 0.7rem;
         padding: 3px 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    .message {
+        max-width: 95%;
+        margin: 6px 8px;
+    }
+
+    .message-content {
+        max-width: 75%;
+    }
+
+    .message img {
+        width: 30px;
+        height: 30px;
     }
 }
 
