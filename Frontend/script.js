@@ -114,6 +114,26 @@ const displayResponse = (responseParts) => {
     });
 };
 
+// Format Bot Message
+const formatBotMessage = (content) => {
+    // Format definitions
+    content = content.replace(/\[def:(.*?)\]/g, '<div class="definition">$1</div>');
+    
+    // Format important points
+    content = content.replace(/\[imp:(.*?)\]/g, '<div class="important-point">$1</div>');
+    
+    // Format examples
+    content = content.replace(/\[ex:(.*?)\]/g, '<div class="example">$1</div>');
+    
+    // Format emphasis
+    content = content.replace(/\*\*(.*?)\*\*/g, '<span class="emphasis">$1</span>');
+    
+    // Format math expressions
+    content = content.replace(/\$\$(.*?)\$\$/g, '<span class="math">$1</span>');
+    
+    return content;
+};
+
 // Append Text Message
 const appendMessage = (sender, content) => {
     const messageDiv = document.createElement('div');
@@ -125,13 +145,18 @@ const appendMessage = (sender, content) => {
 
     const messageContent = document.createElement('div');
     messageContent.classList.add('message-content');
-    messageContent.textContent = content;
+    
+    // Apply formatting for bot messages
+    if (sender === 'bot') {
+        messageContent.innerHTML = formatBotMessage(content);
+    } else {
+        messageContent.textContent = content;
+    }
 
     messageDiv.appendChild(avatar);
     messageDiv.appendChild(messageContent);
     chatBox.appendChild(messageDiv);
-
-    chatBox.scrollTop = chatBox.scrollHeight; // Scroll to latest message
+    chatBox.scrollTop = chatBox.scrollHeight;
 };
 
 // Append Code Snippet
