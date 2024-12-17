@@ -72,10 +72,11 @@ const showTypingIndicator = () => {
 let currentFileContext = null;
 let currentUploadedFile = null;
 let fileAnalysis = null;
+let isFileUploading = false;
 
 const sendMessage = async () => {
     const userMessage = messageInput.value.trim();
-    if ((!userMessage && !currentUploadedFile) || isAIGenerating) return;
+    if ((!userMessage && !currentUploadedFile) || isAIGenerating || isFileUploading) return;
 
     isAIGenerating = true;
     sendBtn.disabled = true;
@@ -301,10 +302,15 @@ fileInput.addEventListener('change', (e) => {
     const preview = document.getElementById('upload-preview');
     const fileName = preview.querySelector('.file-name');
     const progress = preview.querySelector('.progress');
+    const sendBtn = document.getElementById('send-btn');
     
     fileName.textContent = file.name;
     progress.style.width = '0%';
     preview.style.display = 'flex';
+    
+    // Disable send button while uploading
+    isFileUploading = true;
+    sendBtn.disabled = true;
     
     // Upload file immediately but don't send to chat
     uploadFile(file, progress);
@@ -314,6 +320,7 @@ fileInput.addEventListener('change', (e) => {
 const uploadFile = async (file, progressElement) => {
     const formData = new FormData();
     formData.append('file', file);
+    const sendBtn = document.getElementById('send-btn');
 
     try {
         const response = await fetch(`${API_URL}/analyze-file`, {
@@ -327,18 +334,25 @@ const uploadFile = async (file, progressElement) => {
             progressElement.style.width = '100%';
             currentUploadedFile = file;
             fileAnalysis = data.analysis;
-            // Don't append to chat yet
+            
+            // Enable send button after successful upload
+            isFileUploading = false;
+            sendBtn.disabled = false;
         }
     } catch (error) {
         console.error('Error uploading file:', error);
         document.getElementById('upload-preview').style.display = 'none';
         appendMessage('bot', 'Sorry, there was an error uploading your file.');
+        
+        // Reset upload state
+        isFileUploading = false;
+        sendBtn.disabled = false;
     }
 };
 
 // Send file to chat button handler
 document.querySelector('.send-file').addEventListener('click', () => {
-    if (currentUploadedFile && fileAnalysis) {
+    if (currentUploadedFile && fileAnalysis && !isFileUploading) {
         // Create file message
         const fileContent = `📎 **${currentUploadedFile.name}**\n\n${
             currentUploadedFile.type.startsWith('image/') ? '🖼️ Image Analysis:\n' : '📄 File Content:\n'
@@ -369,4 +383,6 @@ document.querySelector('.remove-file').addEventListener('click', () => {
     currentUploadedFile = null;
     fileAnalysis = null;
     fileInput.value = '';
+    isFileUploading = false;
+    sendBtn.disabled = false;
 });

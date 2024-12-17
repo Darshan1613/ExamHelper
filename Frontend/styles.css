@@ -1310,3 +1310,69 @@ button:active {
 .remove-file:hover {
     color: #ff5555;
 }
+
+/* Input Area with Upload Preview */
+.input-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    border-top: 1px solid #555;
+    position: relative;
+}
+
+.upload-preview {
+    display: none;
+    align-items: center;
+    background: rgba(255,255,255,0.1);
+    padding: 8px 12px;
+    border-radius: 20px;
+    margin: 0;
+    width: calc(100% - 20px);
+    position: absolute;
+    top: -50px;
+    left: 10px;
+    z-index: 10;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+}
+
+.upload-preview .file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+.upload-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .input-area {
+        padding-top: 15px;
+    }
+
+    .upload-preview {
+        font-size: 0.9rem;
+        top: -45px;
+    }
+    
+    .file-upload {
+        order: 1;
+    }
+    
+    #message-input {
+        order: 2;
+        flex: 1;
+    }
+    
+    #send-btn {
+        order: 3;
+    }
+}
