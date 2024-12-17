@@ -771,3 +771,62 @@ button:active {
         max-width: 100vw;
     }
 }
+
+/* Mobile-specific fixes for code and table visibility */
+@media (max-width: 768px) {
+    /* Chat box adjustments */
+    #chat-box {
+        padding: 10px 5px;
+    }
+
+    /* Message content width adjustment */
+    .message-content {
+        max-width: 85%;
+    }
+
+    /* Code and Table Container Fixes for Mobile */
+    .code-block, 
+    .table-block {
+        width: 95%;
+        margin: 10px auto;
+        padding: 10px;
+        overflow: visible;
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto;
+        box-sizing: border-box;
+        transform: scale(0.98);
+    }
+
+    /* Ensure code is visible and scrollable if needed */
+    .code-block pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        width: 100%;
+        overflow-x: auto;
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+
+    /* Table adjustments for mobile */
+    .table-block table {
+        width: 100%;
+        display: table;
+        overflow-x: auto;
+    }
+
+    .table-block th,
+    .table-block td {
+        padding: 8px;
+        font-size: 0.85rem;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    /* Remove any height restrictions and scroll indicators */
+    .code-block::after,
+    .table-block::after,
+    .expand-button {
+        display: none !important;
+    }
+}
