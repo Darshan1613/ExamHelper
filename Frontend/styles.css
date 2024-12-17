@@ -10,6 +10,7 @@ body, html {
     align-items: center;
     background: linear-gradient(145deg, #eef2f3, #d6e0f0);
     color: #333;
+    overflow: hidden; /* Prevents unnecessary scroll */
 }
 
 /* Lock Screen */
@@ -64,7 +65,7 @@ body, html {
     outline: none;
 }
 
-/* Button Updates */
+/* Button */
 button {
     width: 100%;
     padding: 15px;
@@ -100,23 +101,24 @@ button:active {
     display: none;
     flex-direction: column;
     justify-content: space-between;
-    height: 90vh;
-    width: 100%;
-    max-width: 700px;
-    background: rgba(30, 30, 47, 0.9);
-    border-radius: 20px;
-    padding: 20px;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(30, 30, 47, 0.95);
+    padding: 10px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    border-radius: 0;
 }
 
 /* Chat Header */
 #chat-interface header {
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    color: #e0e0e0;
 }
 
 #chat-interface header h2 {
     font-size: 1.5rem;
+    font-weight: bold;
     color: #f0a500;
 }
 
@@ -125,72 +127,195 @@ button:active {
     color: #ccc;
 }
 
-/* Quotes Section in Chat Interface */
-#chat-interface #quote-section {
+/* Quote Section */
+#quote-section {
     width: 100%;
     text-align: center;
-    padding: 15px 20px;
+    padding: 15px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    margin-bottom: 20px;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-#chat-interface #quote-text {
-    font-size: 1.1rem;
+    border-radius: 10px;
+    color: #f0f0f0;
+    margin-bottom: 10px;
+    font-size: 1rem;
     font-style: italic;
-    color: #ffffff;
-    line-height: 1.5;
-    word-wrap: break-word;
-    margin: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Chat Box */
 #chat-box {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    border-radius: 16px;
-    background: rgba(30, 30, 47, 0.8);
-    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.3);
+    background: rgba(30, 30, 47, 0.9);
+    border-radius: 12px;
 }
 
 /* Chat Bubbles */
 .message {
     display: flex;
     align-items: flex-start;
-    max-width: 100%;
+    max-width: 90%;
+    margin: 0 10px;
 }
 
 .message.user-message {
     flex-direction: row-reverse;
+    align-self: flex-end; /* Align user messages to the right */
+    text-align: right;
+}
+
+.message.bot-message {
+    align-self: flex-start; /* Align bot messages to the left */
 }
 
 .message-content {
     padding: 12px 18px;
     border-radius: 20px;
     font-size: 0.95rem;
-    word-wrap: break-word;
-    word-break: break-word;
     line-height: 1.5;
-    max-width: 75%; /* Restricts bubble width */
+    word-wrap: break-word;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 60%;
 }
 
 .user-message .message-content {
     background-color: #4caf50;
     color: white;
+    border-bottom-right-radius: 0;
+    margin-left: auto;
 }
 
 .bot-message .message-content {
     background-color: #444;
     color: #eee;
+    border-bottom-left-radius: 0;
+    margin-right: auto;
 }
 
-/* Profile Icons for Messages */
+/* Code Snippets */
+.code-block {
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+    position: relative;
+    cursor: pointer;
+    max-height: 200px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.code-block.expanded {
+    max-height: 1000px;
+}
+
+.code-block pre {
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.code-block::after {
+    content: "Click to expand";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: rgba(0,0,0,0.8);
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    opacity: 0.7;
+}
+
+/* Table Styling */
+.table-block {
+    background: #fff;
+    border-radius: 8px;
+    margin: 10px 0;
+    max-height: 200px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.table-block.expanded {
+    max-height: 1000px;
+}
+
+.table-block table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.table-block th, .table-block td {
+    border: 1px solid #ddd; /* Add cell borders */
+    padding: 8px;
+    text-align: center;
+}
+
+.table-block th {
+    background-color: #4caf50; /* Header background color */
+    color: white;
+    font-weight: bold;
+}
+
+.table-block td {
+    background-color: #fff;
+    color: #333;
+}
+
+.table-block table:hover td {
+    background-color: #f0f0f0; /* Highlight rows when hovered */
+}
+
+.table-block th {
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #45a049;
+}
+
+.table-block td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+.table-block tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+.table-block tr:hover {
+    background-color: #f0f0f0;
+}
+
+.table-block::after {
+    content: "Click to expand";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    opacity: 0.7;
+}
+
+/* Profile Icons */
 .message img {
     width: 40px;
     height: 40px;
@@ -203,26 +328,12 @@ button:active {
     margin-right: 0;
 }
 
-/* Code Snippets */
-.code-snippet {
-    background: #1e1e1e;
-    color: #dcdcdc;
-    font-family: 'Courier New', Courier, monospace;
-    padding: 10px;
-    border-radius: 8px;
-    overflow-x: auto;
-    white-space: pre-wrap;
-    margin-top: 10px;
-}
-
-/* Footer Input Section */
+/* Input Area */
 .input-area {
     display: flex;
-    align-items: center;
     gap: 10px;
-    background: rgba(30, 30, 47, 0.9);
     padding: 10px;
-    border-radius: 0 0 16px 16px;
+    border-top: 1px solid #555;
 }
 
 .input-area input {
@@ -230,11 +341,10 @@ button:active {
     padding: 12px;
     border: none;
     border-radius: 20px;
-    background: rgba(50, 50, 60, 0.8);
+    background: #333;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: 1rem;
     outline: none;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .input-area input::placeholder {
@@ -242,84 +352,422 @@ button:active {
 }
 
 .input-area button {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(145deg, #4caf50, #5fcf6b);
+    width: 50px;
+    height: 50px;
+    background: #4caf50;
     border: none;
     border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    color: white;
+    font-size: 1.2rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background 0.3s ease;
 }
 
 .input-area button:hover {
-    background: linear-gradient(145deg, #45a049, #57d663);
+    background: #45a049;
 }
 
-/* Loader Styles */
-.loader {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #4caf50;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Scroll Bar Styling for Chat Box */
+/* Scrollbar Styling */
 #chat-box::-webkit-scrollbar {
     width: 8px;
 }
 
 #chat-box::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 5px;
+    background: #666;
+    border-radius: 10px;
 }
 
-#chat-box::-webkit-scrollbar-thumb:hover {
-    background: #777;
+#chat-box::-webkit-scrollbar-track {
+    background: #333;
 }
 
-/* Responsive Design */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
-    #chat-interface {
-        padding: 15px;
-        max-width: 100%;
-    }
-
-    #chat-interface #quote-section {
-        padding: 10px;
-        font-size: 0.9rem;
-    }
-
-    #chat-box {
-        padding: 15px;
-        margin-bottom: 15px;
-    }
-
     .message-content {
         font-size: 0.9rem;
-        max-width: 90%;
-    }
-
-    .input-area input {
-        font-size: 0.8rem;
-        padding: 10px;
     }
 
     .input-area button {
         width: 40px;
         height: 40px;
+    }
+
+    .expand-button {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+    }
+}
+
+.code-block, .table-block {
+    position: relative;
+    max-height: none; /* Remove height restriction */
+    overflow: visible; /* Ensure content is fully visible */
+    transition: none; /* Remove transition for height */
+    margin: 15px 0;
+    cursor: default; /* Remove cursor pointer */
+    width: 100%;
+    padding-bottom: 0; /* Remove space for expand button */
+}
+
+.code-block.expanded, .table-block.expanded {
+    max-height: none; /* Ensure content is fully visible */
+    overflow: visible; /* Ensure content is fully visible */
+    padding-bottom: 0; /* Remove space for expand button */
+}
+
+.expand-button {
+    display: none; /* Hide expand button */
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+    .code-block, .table-block {
+        font-size: 0.9rem;
+        border-radius: 6px;
+        margin: 10px 0;
+    }
+
+    .expand-button {
+        font-size: 0.8rem;
+        padding: 6px;
+    }
+
+    .table-block td, .table-block th {
+        padding: 6px 8px;
+        min-width: 100px; /* Ensure cells don't get too narrow */
+    }
+
+    /* Hide scrollbars but keep functionality */
+    .code-block::-webkit-scrollbar,
+    .table-block::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+    
+    /* Add horizontal scroll indicator */
+    .table-block::after {
+        content: '← Scroll →';
+        display: block;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #666;
+        padding: 4px;
+        background: rgba(255, 255, 255, 0.9);
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+}
+
+.code-block pre {
+    margin: 0;
+    padding: 15px;
+    background: #1e1e1e;
+    border-radius: 8px;
+}
+
+.table-block {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* Table and Code Block Base Styles */
+.code-block, .table-block {
+    position: relative;
+    width: 100%;
+    margin: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow-x: auto;
+    max-height: none; /* Ensure content is fully visible */
+}
+
+.code-block {
+    background: #1e1e1e;
+    color: #f0f0f0;
+    padding: 15px;
+}
+
+.table-block {
+    background: white;
+    padding: 10px;
+}
+
+.table-block table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.code-block pre {
+    margin: 0;
+    white-space: pre;
+    width: max-content; /* Allow code to be wider than container */
+    min-width: 100%;
+}
+
+@media (max-width: 768px) {
+    .code-block, .table-block {
+        font-size: 0.9rem;
+        border-radius: 6px;
+    }
+
+    .table-block td, .table-block th {
+        min-width: 120px;
+        padding: 8px;
+        white-space: nowrap; /* Prevent text wrapping in cells */
+    }
+
+    .code-block pre {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-block {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Scroll indicator */
+    .table-block::after,
+    .code-block::after {
+        content: '← Scroll horizontally →';
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        padding: 5px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        font-size: 0.8rem;
+        pointer-events: none;
+    }
+}
+
+/* Table and Code Block Base Styles */
+.code-block, .table-block {
+    position: relative;
+    min-height: 100px;
+    max-height: fit-content;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin: 15px 0;
+    cursor: pointer;
+    width: 100%;
+    padding-bottom: 40px; /* Space for expand button */
+}
+
+.code-block.expanded, .table-block.expanded {
+    max-height: none;
+    padding-bottom: 40px;
+}
+
+/* Expand Button Styles */
+.expand-button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    text-align: center;
+    padding: 8px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+    color: white;
+    font-size: 0.9rem;
+    z-index: 10;
+    pointer-events: none;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Table specific styles */
+.table-block {
+    background: white;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-block table {
+    min-width: 100%;
+    border-collapse: collapse;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+    .code-block, .table-block {
+        font-size: 0.9rem;
+        border-radius: 8px;
+        margin: 10px 0;
+        max-height: none;
+        height: auto;
+    }
+
+    .table-block {
+        max-height: 300px; /* Initial height for tables */
+    }
+
+    .table-block.expanded {
+        max-height: none;
+    }
+
+    .table-block td, .table-block th {
+        padding: 8px;
+        min-width: 120px; /* Minimum cell width */
+        white-space: normal; /* Allow text wrapping */
+        word-break: break-word;
+    }
+
+    .expand-button {
+        background: rgba(0, 0, 0, 0.8);
+        font-weight: bold;
+        padding: 10px;
+        height: 40px;
+    }
+
+    /* Scroll indicator for tables */
+    .table-block::after {
+        content: '← Scroll horizontally →';
+        position: absolute;
+        bottom: 40px; /* Position above expand button */
+        left: 0;
+        right: 0;
+        text-align: center;
+        padding: 5px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        font-size: 0.8rem;
+    }
+}
+
+/* Code Snippets and Tables - Updated Styles */
+.code-block, .table-block {
+    position: relative;
+    width: 100%;
+    margin: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow-x: auto;
+    max-height: none;
+    padding: 15px;
+    cursor: default;
+}
+
+/* Remove all expand buttons and related styles */
+.code-block::after,
+.table-block::after,
+.expand-button {
+    display: none !important;
+}
+
+/* Ensure table content is fully visible */
+.table-block table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    background: white;
+}
+
+/* Ensure code content is fully visible */
+.code-block pre {
+    margin: 0;
+    white-space: pre-wrap;
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .code-block, .table-block {
+        font-size: 0.9rem;
+        padding: 10px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-block td, .table-block th {
+        padding: 8px;
+        min-width: 120px;
+        white-space: normal;
+        word-break: break-word;
+    }
+}
+
+/* Code and Table Container Styles */
+.code-block, .table-block {
+    position: relative;
+    width: 100%;
+    margin: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: visible;
+    height: auto;
+    min-height: auto;
+    max-height: none;
+    padding: 15px;
+    cursor: default;
+    background: white;
+}
+
+.code-block {
+    background: #1e1e1e;
+    color: #f0f0f0;
+}
+
+/* Code Content Styles */
+.code-block pre {
+    margin: 0;
+    padding: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    width: 100%;
+}
+
+/* Table Content Styles */
+.table-block table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    table-layout: auto;
+}
+
+.table-block th, 
+.table-block td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    word-wrap: break-word;
+    min-width: 100px;
+}
+
+.table-block th {
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+}
+
+/* Remove all expand buttons and transitions */
+.code-block::after,
+.table-block::after,
+.expand-button {
+    display: none !important;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .code-block, 
+    .table-block {
+        margin: 10px 0;
+        padding: 10px;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .table-block {
+        max-width: 100vw;
     }
 }

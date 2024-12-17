@@ -1,5 +1,5 @@
-// Get all necessary DOM elements
-const pinInputs = document.querySelectorAll('.pin-box'); // All individual PIN input boxes
+// DOM Elements
+const pinInputs = document.querySelectorAll('.pin-box');
 const unlockBtn = document.getElementById('unlock-btn');
 const pinError = document.getElementById('pin-error');
 const lockScreen = document.getElementById('lock-screen');
@@ -7,110 +7,101 @@ const chatInterface = document.getElementById('chat-interface');
 const sendBtn = document.getElementById('send-btn');
 const messageInput = document.getElementById('message-input');
 const chatBox = document.getElementById('chat-box');
-const quoteText = document.getElementById('quote-text'); // For motivational quotes
+const quoteText = document.getElementById('quote-text');
 
-// Fetch a motivational quote from GPT API
+// Backend URL (set to localhost for development)
+const API_URL = 'http://localhost:3000'; // Change to production URL when deploying
+
+// Fetch and Display a Motivational Quote
 const fetchMotivationalQuote = async () => {
     try {
-        const response = await fetch('http://localhost:3000/generate-quote', {
-            method: 'GET',
-        });
+        const response = await fetch(`${API_URL}/generate-quote`);
         const data = await response.json();
-        return data.quote || "Stay motivated and keep pushing forward!";
+        quoteText.textContent = `"${data.quote}"`;
     } catch (error) {
-        console.error("Error fetching motivational quote:", error);
-        return "Hard work beats talent when talent doesn’t work hard.";
+        console.error('Error fetching motivational quote:', error);
+        quoteText.textContent = '"Stay focused and keep learning!"';
     }
 };
 
-// Display a motivational quote on the chat screen
-const displayMotivationalQuote = async () => {
-    const quote = await fetchMotivationalQuote();
-    quoteText.textContent = `"${quote}"`;
-};
-
-// Highlight the active PIN input
+// PIN Input Handling
 pinInputs.forEach((input, index) => {
-    input.addEventListener('input', (e) => {
+    input.addEventListener('input', () => {
         if (input.value.length === 1 && index < pinInputs.length - 1) {
-            pinInputs[index + 1].focus(); // Move to next input
+            pinInputs[index + 1].focus();
         }
     });
 
     input.addEventListener('keydown', (e) => {
         if (e.key === 'Backspace' && input.value === '' && index > 0) {
-            pinInputs[index - 1].focus(); // Move to previous input
+            pinInputs[index - 1].focus();
         }
-    });
-
-    // Add focus highlight
-    input.addEventListener('focus', () => {
-        input.style.boxShadow = '0 0 5px rgba(76, 175, 80, 0.5)'; // Highlight active input
-    });
-
-    input.addEventListener('blur', () => {
-        input.style.boxShadow = 'none'; // Remove highlight on blur
     });
 });
 
-// Unlock the chat interface after entering the correct PIN
+// Unlock Chat Interface
 unlockBtn.addEventListener('click', () => {
-    const pin = Array.from(pinInputs).map(input => input.value).join(''); // Combine values from all inputs
-    if (!pin || pin.length !== 4) {
-        pinError.textContent = 'Please enter a valid 4-digit PIN.';
-        return;
-    }
-
-    // Example: Replace '1234' with your backend validation logic
+    const pin = Array.from(pinInputs).map(input => input.value).join('');
     if (pin === '1234') {
-        pinError.textContent = ''; // Clear error
-        lockScreen.style.display = 'none'; // Hide lock screen
-        chatInterface.style.display = 'flex'; // Show chat interface
-        displayMotivationalQuote(); // Fetch and show motivational quote
+        lockScreen.style.display = 'none';
+        chatInterface.style.display = 'flex';
+        fetchMotivationalQuote();
     } else {
         pinError.textContent = 'Incorrect PIN. Please try again.';
     }
 });
 
-// Send a chat message
+// Send Message
 const sendMessage = async () => {
-    const message = messageInput.value.trim();
-    if (!message) return;
+    const userMessage = messageInput.value.trim();
+    if (!userMessage) return;
 
-    addMessage('user', message);
+    appendMessage('user', userMessage); // Add user message to chat
+    messageInput.value = '';
 
+    // Show loading indicator
     const loader = document.createElement('div');
     loader.classList.add('message', 'bot-message');
     loader.innerHTML = `<div class="loader"></div>`;
     chatBox.appendChild(loader);
+    chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Disable the send button while the message is being processed
-    sendBtn.disabled = true;
-    sendBtn.classList.add('loading');
-
-    messageInput.value = '';
+    sendBtn.disabled = true; // Disable send button while processing
 
     try {
-        const response = await fetch('http://localhost:3000/chat', {
+        const response = await fetch(`${API_URL}/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message })
+            body: JSON.stringify({ message: userMessage })
         });
-        const data = await response.json();
 
+        const data = await response.json();
         chatBox.removeChild(loader); // Remove loader
-        addMessage('bot', data.response);
+        displayResponse(data.response); // Process the response parts
     } catch (error) {
         chatBox.removeChild(loader); // Remove loader
-        addMessage('bot', 'Oops! Something went wrong. Please try again later.');
+        appendMessage('bot', 'Oops! Something went wrong.');
+        console.error('Error:', error);
     } finally {
-        sendBtn.disabled = false; // Re-enable the send button
-        sendBtn.classList.remove('loading');
+        sendBtn.disabled = false; // Re-enable send button
     }
 };
 
-// Add a new message to the chat box
-const addMessage = (sender, content) => {
+// Display Response (handles text, code, and tables)
+const displayResponse = (responseParts) => {
+    responseParts.forEach((part) => {
+        if (part.type === 'text') {
+            appendMessage('bot', part.content); // Add text to chat
+        } else if (part.type === 'code') {
+            appendCodeSnippet(part.content); // Render code block
+        } else if (part.type === 'table') {
+            appendTable(part.content); // Render table
+        }
+    });
+};
+
+// Append Text Message
+const appendMessage = (sender, content) => {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
 
@@ -120,45 +111,59 @@ const addMessage = (sender, content) => {
 
     const messageContent = document.createElement('div');
     messageContent.classList.add('message-content');
-
-    // Process content to render special formats
-    if (/<pre><code>.*<\/code><\/pre>/.test(content)) {
-        // Render as a code snippet
-        const codeBlock = document.createElement('pre');
-        codeBlock.classList.add('code-snippet');
-        codeBlock.textContent = content.match(/<pre><code>([\s\S]*?)<\/code><\/pre>/)[1];
-        messageContent.appendChild(codeBlock);
-    } else if (/^<img.*src=.*>$/.test(content)) {
-        // Render as an image
-        const img = document.createElement('img');
-        img.src = content.match(/src=["'](.*?)["']/)[1];
-        img.alt = 'Generated Image';
-        img.style.maxWidth = '100%';
-        img.style.borderRadius = '8px';
-        messageContent.appendChild(img);
-    } else if (/<table>.*<\/table>/.test(content)) {
-        // Render as a table
-        const table = document.createElement('div');
-        table.classList.add('table-wrapper');
-        table.innerHTML = content;
-        messageContent.appendChild(table);
-    } else {
-        // Render as plain HTML text
-        if (content.length > 500) {
-            content = content.slice(0, 500) + '...'; // Truncate long messages
-        }
-        messageContent.innerHTML = content;
-    }
+    messageContent.textContent = content;
 
     messageDiv.appendChild(avatar);
     messageDiv.appendChild(messageContent);
     chatBox.appendChild(messageDiv);
 
-    // Ensure the chat box scrolls to the latest message
+    chatBox.scrollTop = chatBox.scrollHeight; // Scroll to latest message
+};
+
+// Append Code Snippet
+const appendCodeSnippet = (code) => {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('code-block');
+    
+    const pre = document.createElement('pre');
+    const codeElement = document.createElement('code');
+    codeElement.textContent = code;
+    pre.appendChild(codeElement);
+    
+    wrapper.appendChild(pre);
+    
+    chatBox.appendChild(wrapper);
     chatBox.scrollTop = chatBox.scrollHeight;
 };
 
-// Event listeners for sending messages
+// Append Table
+const appendTable = (tableHtml) => {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('table-block');
+    
+    const table = document.createElement('table');
+    const rows = tableHtml.split('\n').filter(row => row.trim());
+    
+    rows.forEach((row, index) => {
+        const tr = document.createElement('tr');
+        const cells = row.split('|').filter(cell => cell.trim());
+        
+        cells.forEach(cell => {
+            const element = document.createElement(index === 0 ? 'th' : 'td');
+            element.textContent = cell.trim();
+            tr.appendChild(element);
+        });
+        
+        table.appendChild(tr);
+    });
+    
+    wrapper.appendChild(table);
+    
+    chatBox.appendChild(wrapper);
+    chatBox.scrollTop = chatBox.scrollHeight;
+};
+
+// Event Listeners for Sending Messages
 sendBtn.addEventListener('click', sendMessage);
 messageInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage();

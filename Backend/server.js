@@ -32,24 +32,25 @@ app.post('/verify-code', (req, res) => {
     }
 });
 
-// Chat Endpoint
+// Chat Endpoint - Using GPT-4o
 app.post('/chat', async (req, res) => {
     const { message } = req.body;
 
     try {
         // Call OpenAI API
         const response = await openai.chat.completions.create({
-            model: 'gpt-4', // Specify GPT-4 model
+            model: 'gpt-4o', // Use GPT-4o model
             messages: [
                 { role: 'system', content: 'You are a helpful assistant for Simran Mohanty’s NET Life Science exam preparation. This application was developed by Soumya Darshan Pattanaik.' },
                 { role: 'user', content: message },
             ],
+            max_tokens: 1000, // Ensures larger responses are handled
         });
 
         const gptResponse = response.choices[0].message.content;
 
-        // Format the response to support various types
-        const formattedResponse = formatResponse(gptResponse);
+        // Format the response to split structured content
+        const formattedResponse = splitAndFormatResponse(gptResponse);
 
         // Save to chat history
         chatHistory.push({ user: message, bot: formattedResponse });
@@ -62,14 +63,56 @@ app.post('/chat', async (req, res) => {
     }
 });
 
-// Generate Motivational Quote Endpoint
+// Function to split and format GPT response
+const splitAndFormatResponse = (response) => {
+    const responseParts = [];
+    let remainingText = response;
+
+    // Extract and split code blocks
+    remainingText = remainingText.replace(/```([\s\S]*?)```/g, (match, code) => {
+        responseParts.push({ 
+            type: 'code', 
+            content: code.trim() 
+        });
+        return '';
+    });
+
+    // Extract and split tables
+    const tableRegex = /\|[\s\S]*?\|[\s\S]*?(?=\n\n|$)/g;
+    remainingText = remainingText.replace(tableRegex, (match) => {
+        const tableRows = match.trim().split('\n')
+            .filter(row => row.trim() !== '')
+            .map(row => row.trim());
+        
+        if (tableRows.length > 0) {
+            responseParts.push({
+                type: 'table',
+                content: tableRows.join('\n')
+            });
+        }
+        return '';
+    });
+
+    // Add remaining text
+    if (remainingText.trim()) {
+        responseParts.push({ 
+            type: 'text', 
+            content: remainingText.trim() 
+        });
+    }
+
+    return responseParts;
+};
+
+// Generate Motivational Quote Endpoint - Using GPT-4o
 app.get('/generate-quote', async (req, res) => {
     try {
         const response = await openai.chat.completions.create({
-            model: 'gpt-4',
+            model: 'gpt-4o',
             messages: [
                 { role: 'system', content: 'You are a motivational assistant. Generate an inspiring quote related to studying and perseverance.' },
             ],
+            max_tokens: 100, // Limit token size for quotes
         });
 
         const quote = response.choices[0].message.content.trim();
@@ -86,46 +129,11 @@ app.delete('/clear-history', (req, res) => {
     res.status(200).json({ success: true, message: 'Chat history cleared successfully' });
 });
 
-// Function to format GPT response
-const formatResponse = (response) => {
-    // Replace code blocks
-    response = response.replace(/```([\s\S]*?)```/g, (match, code) => {
-        return `<pre><code>${code}</code></pre>`;
-    });
-
-    // Replace tables
-    response = response.replace(/\|(.+?)\|/g, (match) => {
-        const rows = match
-            .trim()
-            .split('\n')
-            .map((row) =>
-                `<tr>${row
-                    .split('|')
-                    .map((cell) => `<td>${cell.trim()}</td>`)
-                    .join('')}</tr>`
-            )
-            .join('');
-        return `<table>${rows}</table>`;
-    });
-
-    // Replace emojis
-    response = response.replace(/:([a-z_]+):/g, (match, emojiName) => {
-        return `<span class="emoji">😊</span>`; // Replace with your emoji logic or fallback
-    });
-
-    // Replace images
-    response = response.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
-        return `<img src="${url}" alt="${alt}" />`;
-    });
-
-    return response;
-};
-
 // Get Chat History Endpoint
 app.get('/history', (req, res) => {
     res.status(200).json(chatHistory);
 });
 
 // Start the server
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
