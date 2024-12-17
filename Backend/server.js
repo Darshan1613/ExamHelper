@@ -3,6 +3,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const OpenAI = require('openai');
+const multer = require('multer');
+const pdf = require('pdf-parse');
+const fs = require('fs');
 
 const app = express();
 app.use(bodyParser.json());
@@ -32,19 +35,29 @@ app.post('/verify-code', (req, res) => {
     }
 });
 
-// Chat Endpoint - Using GPT-4o
+// Modified chat endpoint to handle file context
 app.post('/chat', async (req, res) => {
-    const { message } = req.body;
+    const { message, fileContext } = req.body;
 
     try {
-        // Call OpenAI API
+        let messages = [
+            { role: 'system', content: 'You are a helpful assistant for exam preparation.' }
+        ];
+
+        // Add file context if provided
+        if (fileContext) {
+            messages.push({ 
+                role: 'system', 
+                content: `Context from uploaded file: ${fileContext}` 
+            });
+        }
+
+        messages.push({ role: 'user', content: message });
+
         const response = await openai.chat.completions.create({
-            model: 'gpt-4o', // Use GPT-4o model
-            messages: [
-                { role: 'system', content: 'You are a helpful assistant for Simran Mohanty’s NET Life Science exam preparation. This application was developed by Soumya Darshan Pattanaik.' },
-                { role: 'user', content: message },
-            ],
-            max_tokens: 1000, // Ensures larger responses are handled
+            model: 'gpt-4o',
+            messages: messages,
+            max_tokens: 1000,
         });
 
         const gptResponse = response.choices[0].message.content;
@@ -132,6 +145,126 @@ app.delete('/clear-history', (req, res) => {
 // Get Chat History Endpoint
 app.get('/history', (req, res) => {
     res.status(200).json(chatHistory);
+});
+
+// Configure multer for file uploads
+const upload = multer({
+    dest: 'uploads/',
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    }
+});
+
+// Function to analyze image
+const analyzeImage = async (imagePath, mimetype) => {
+    const base64Image = fs.readFileSync(imagePath, { encoding: 'base64' });
+    const imageUrl = `data:${mimetype};base64,${base64Image}`;
+    
+    const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+            {
+                role: "user",
+                content: [
+                    { type: "text", text: "Analyze this image in detail and provide insights relevant for exam preparation." },
+                    {
+                        type: "image_url",
+                        image_url: {
+                            url: imageUrl,
+                            detail: "high"
+                        }
+                    }
+                ]
+            }
+        ]
+    });
+
+    return response.choices[0].message.content;
+};
+
+// File upload endpoint
+app.post('/upload', upload.array('files'), async (req, res) => {
+    try {
+        const files = req.files;
+        const analysisResults = [];
+
+        for (const file of files) {
+            try {
+                let result = {
+                    type: file.mimetype.startsWith('image/') ? 'image' : 'pdf',
+                    name: file.originalname
+                };
+
+                if (file.mimetype.startsWith('image/')) {
+                    result.analysis = await analyzeImage(file.path, file.mimetype);
+                } else if (file.mimetype === 'application/pdf') {
+                    const dataBuffer = fs.readFileSync(file.path);
+                    const pdfData = await pdf(dataBuffer);
+                    result.content = pdfData.text;
+                }
+
+                analysisResults.push(result);
+            } catch (err) {
+                console.error(`Error processing file ${file.originalname}:`, err);
+                analysisResults.push({
+                    type: 'error',
+                    name: file.originalname,
+                    error: 'Failed to process file'
+                });
+            } finally {
+                // Clean up uploaded file
+                if (fs.existsSync(file.path)) {
+                    fs.unlinkSync(file.path);
+                }
+            }
+        }
+
+        res.json({ success: true, results: analysisResults });
+    } catch (error) {
+        console.error('Error processing files:', error);
+        res.status(500).json({ error: 'Failed to process files' });
+    }
+});
+
+// Configure multer with progress tracking
+const uploadWithProgress = multer({
+    dest: 'uploads/',
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB limit
+    }
+}).single('file');
+
+// Modified file analysis endpoint
+app.post('/analyze-file', upload.single('file'), async (req, res) => {
+    try {
+        const file = req.file;
+        if (!file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+
+        let analysis = '';
+        if (file.mimetype.startsWith('image/')) {
+            analysis = await analyzeImage(file.path, file.mimetype);
+        } else if (file.mimetype === 'application/pdf') {
+            const dataBuffer = fs.readFileSync(file.path);
+            const pdfData = await pdf(dataBuffer);
+            analysis = pdfData.text;
+        }
+
+        fs.unlinkSync(file.path); // Clean up uploaded file
+        res.json({ 
+            success: true, 
+            fileName: file.originalname,
+            fileType: file.mimetype,
+            analysis: analysis 
+        });
+    } catch (error) {
+        console.error('Error analyzing file:', error);
+        if (req.file && fs.existsSync(req.file.path)) {
+            fs.unlinkSync(req.file.path);
+        }
+        res.status(500).json({ error: 'Failed to analyze file' });
+    }
 });
 
 // Start the server

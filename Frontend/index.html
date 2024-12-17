@@ -37,6 +37,24 @@
                 <!-- Messages will appear here dynamically -->
             </div>
             <footer class="input-area">
+                <div class="file-upload">
+                    <input type="file" id="file-input" accept="image/*,.pdf,.doc,.docx" multiple>
+                    <button id="file-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="white" d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="upload-preview" id="upload-preview" style="display: none;">
+                    <span class="file-name"></span>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <div class="upload-actions">
+                        <button class="send-file" title="Send to chat">📤</button>
+                        <button class="remove-file" title="Remove">×</button>
+                    </div>
+                </div>
                 <input type="text" id="message-input" placeholder="Type your message here...">
                 <button id="send-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="24px" height="24px">

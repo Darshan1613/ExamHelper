@@ -8,6 +8,8 @@ const sendBtn = document.getElementById('send-btn');
 const messageInput = document.getElementById('message-input');
 const chatBox = document.getElementById('chat-box');
 const quoteText = document.getElementById('quote-text');
+const fileInput = document.getElementById('file-input');
+const fileBtn = document.getElementById('file-btn');
 
 // Backend URL (set to localhost for development)
 const API_URL = 'http://localhost:3000'; // Change to production URL when deploying
@@ -67,33 +69,85 @@ const showTypingIndicator = () => {
     return indicator;
 };
 
+let currentFileContext = null;
+let currentUploadedFile = null;
+let fileAnalysis = null;
+
 const sendMessage = async () => {
     const userMessage = messageInput.value.trim();
-    if (!userMessage || isAIGenerating) return;
+    if ((!userMessage && !currentUploadedFile) || isAIGenerating) return;
 
-    appendMessage('user', userMessage);
-    messageInput.value = '';
-
-    // Show typing indicator and disable send button
     isAIGenerating = true;
     sendBtn.disabled = true;
     sendBtn.classList.add('loading');
-    const typingIndicator = showTypingIndicator();
 
     try {
-        const response = await fetch(`${API_URL}/chat`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userMessage })
-        });
+        // If there's a file to process
+        if (currentUploadedFile) {
+            const preview = document.getElementById('upload-preview');
+            const progress = preview.querySelector('.progress');
+            
+            const formData = new FormData();
+            formData.append('file', currentUploadedFile);
 
-        const data = await response.json();
-        chatBox.removeChild(typingIndicator);
-        displayResponse(data.response);
+            // Upload the file first
+            const uploadResponse = await fetch(`${API_URL}/analyze-file`, {
+                method: 'POST',
+                body: formData,
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    progress.style.width = `${percentCompleted}%`;
+                }
+            });
+
+            const fileData = await uploadResponse.json();
+            
+            if (fileData.success) {
+                // Add file context to the message
+                currentFileContext = fileData.analysis;
+                
+                // If there's a message, send it with file context
+                if (userMessage) {
+                    appendMessage('user', `📎 ${currentUploadedFile.name}\n${userMessage}`);
+                    const response = await fetch(`${API_URL}/chat`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: userMessage,
+                            fileContext: currentFileContext
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    displayResponse(data.response);
+                } else {
+                    // If no message, just show file analysis
+                    appendMessage('user', `📎 ${currentUploadedFile.name}`);
+                    appendMessage('bot', fileData.analysis);
+                }
+                
+                // Clean up
+                document.getElementById('upload-preview').style.display = 'none';
+                currentUploadedFile = null;
+                fileInput.value = '';
+            }
+        } else {
+            // Regular message without file
+            appendMessage('user', userMessage);
+            const response = await fetch(`${API_URL}/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userMessage })
+            });
+            
+            const data = await response.json();
+            displayResponse(data.response);
+        }
+
+        messageInput.value = '';
     } catch (error) {
-        chatBox.removeChild(typingIndicator);
-        appendMessage('bot', 'Oops! Something went wrong.');
         console.error('Error:', error);
+        appendMessage('bot', 'Sorry, something went wrong while processing your request.');
     } finally {
         isAIGenerating = false;
         sendBtn.disabled = false;
@@ -234,4 +288,85 @@ messageInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter' && !isAIGenerating) {
         sendMessage();
     }
+});
+
+// Add to script.js
+fileBtn.addEventListener('click', () => fileInput.click());
+
+// Modified file input handler
+fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const preview = document.getElementById('upload-preview');
+    const fileName = preview.querySelector('.file-name');
+    const progress = preview.querySelector('.progress');
+    
+    fileName.textContent = file.name;
+    progress.style.width = '0%';
+    preview.style.display = 'flex';
+    
+    // Upload file immediately but don't send to chat
+    uploadFile(file, progress);
+});
+
+// New file upload function
+const uploadFile = async (file, progressElement) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch(`${API_URL}/analyze-file`, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            progressElement.style.width = '100%';
+            currentUploadedFile = file;
+            fileAnalysis = data.analysis;
+            // Don't append to chat yet
+        }
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        document.getElementById('upload-preview').style.display = 'none';
+        appendMessage('bot', 'Sorry, there was an error uploading your file.');
+    }
+};
+
+// Send file to chat button handler
+document.querySelector('.send-file').addEventListener('click', () => {
+    if (currentUploadedFile && fileAnalysis) {
+        // Create file message
+        const fileContent = `📎 **${currentUploadedFile.name}**\n\n${
+            currentUploadedFile.type.startsWith('image/') ? '🖼️ Image Analysis:\n' : '📄 File Content:\n'
+        }${fileAnalysis}`;
+        
+        appendMessage('user', fileContent);
+        
+        // Store context for follow-up questions
+        currentFileContext = fileAnalysis;
+        
+        // Show prompt for questions
+        appendMessage('bot', 'I\'ve analyzed your file. You can:\n' +
+            '• Ask questions about specific parts\n' +
+            '• Request summaries or explanations\n' +
+            '• Get study recommendations based on the content');
+        
+        // Clean up
+        document.getElementById('upload-preview').style.display = 'none';
+        currentUploadedFile = null;
+        fileAnalysis = null;
+        fileInput.value = '';
+    }
+});
+
+// Modified remove file handler
+document.querySelector('.remove-file').addEventListener('click', () => {
+    document.getElementById('upload-preview').style.display = 'none';
+    currentUploadedFile = null;
+    fileAnalysis = null;
+    fileInput.value = '';
 });
