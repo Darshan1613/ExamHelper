@@ -116,6 +116,31 @@ const displayResponse = (responseParts) => {
 
 // Format Bot Message
 const formatBotMessage = (content) => {
+    // Split content into paragraphs
+    content = content.split('\n\n').map(para => 
+        `<div class="paragraph">${para}</div>`
+    ).join('');
+    
+    // Format bullet points and numbered lists
+    content = content.replace(/^[•●∙-]\s+(.+)/gm, '<li>$1</li>');
+    content = content.replace(/^(\d+\.|\d+\))\s+(.+)/gm, '<li>$2</li>');
+    content = content.replace(/<li>.*?<\/li>/gs, match => 
+        `<ul class="bot-list">${match}</ul>`
+    );
+
+    // Format section headers
+    content = content.replace(/^(#{1,3})\s+(.+)/gm, (_, level, text) => {
+        const headingLevel = level.length;
+        return `<div class="section-title heading-${headingLevel}">${text}</div>`;
+    });
+
+    // Format bold text
+    content = content.replace(/\*\*(.*?)\*\*/g, '<span class="emphasis">$1</span>');
+    content = content.replace(/__(.*?)__/g, '<span class="emphasis">$1</span>');
+
+    // Format key points
+    content = content.replace(/\[key:(.*?)\]/g, '<div class="key-point">$1</div>');
+
     // Format definitions
     content = content.replace(/\[def:(.*?)\]/g, '<div class="definition">$1</div>');
     
@@ -125,12 +150,12 @@ const formatBotMessage = (content) => {
     // Format examples
     content = content.replace(/\[ex:(.*?)\]/g, '<div class="example">$1</div>');
     
-    // Format emphasis
-    content = content.replace(/\*\*(.*?)\*\*/g, '<span class="emphasis">$1</span>');
-    
     // Format math expressions
     content = content.replace(/\$\$(.*?)\$\$/g, '<span class="math">$1</span>');
     
+    // Format quotes
+    content = content.replace(/^>\s+(.+)/gm, '<blockquote class="quote">$1</blockquote>');
+
     return content;
 };
 
