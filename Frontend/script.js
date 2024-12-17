@@ -156,17 +156,83 @@ const sendMessage = async () => {
     }
 };
 
-// Display Response (handles text, code, and tables)
-const displayResponse = (responseParts) => {
-    responseParts.forEach((part) => {
+// Display Response with typing animation
+const displayResponse = async (responseParts) => {
+    for (const part of responseParts) {
         if (part.type === 'text') {
-            appendMessage('bot', part.content); // Add text to chat
+            const typingIndicator = showTypingIndicator();
+            await typeMessage(part.content, typingIndicator); // Animate text typing
         } else if (part.type === 'code') {
-            appendCodeSnippet(part.content); // Render code block
+            const typingIndicator = showTypingIndicator();
+            await delay(1000); // Show typing indicator briefly
+            typingIndicator.remove();
+            appendCodeSnippet(part.content);
         } else if (part.type === 'table') {
-            appendTable(part.content); // Render table
+            const typingIndicator = showTypingIndicator();
+            await delay(1000); // Show typing indicator briefly
+            typingIndicator.remove();
+            appendTable(part.content);
         }
-    });
+        await delay(300); // Small delay between different parts
+    }
+};
+
+// Function to animate text typing
+const typeMessage = async (content, typingIndicator) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', 'bot-message');
+    
+    const avatar = document.createElement('img');
+    avatar.src = 'bot-icon.png';
+    avatar.alt = 'bot';
+    avatar.classList.add('bot-avatar');
+    
+    const messageContent = document.createElement('div');
+    messageContent.classList.add('message-content');
+    
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(messageContent);
+    
+    // Insert the message div but hide the content
+    typingIndicator.insertAdjacentElement('beforebegin', messageDiv);
+    
+    // Format and type the content
+    const formattedContent = formatBotMessage(content);
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = formattedContent;
+    
+    // Type each character with HTML preservation
+    await typeHTML(tempDiv, messageContent);
+    
+    // Remove typing indicator and scroll to bottom
+    typingIndicator.remove();
+    chatBox.scrollTop = chatBox.scrollHeight;
+};
+
+// Helper function for delays
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+// Function to type HTML content
+const typeHTML = async (sourceDiv, targetDiv) => {
+    const children = Array.from(sourceDiv.childNodes);
+    for (const child of children) {
+        if (child.nodeType === Node.TEXT_NODE) {
+            await typeText(child.textContent, targetDiv);
+        } else {
+            const newElement = child.cloneNode(false);
+            targetDiv.appendChild(newElement);
+            await typeHTML(child, newElement);
+        }
+    }
+};
+
+// Function to type text
+const typeText = async (text, element) => {
+    const words = text.split(' ');
+    for (const word of words) {
+        element.insertAdjacentText('beforeend', word + ' ');
+        await delay(50); // Delay between words
+    }
 };
 
 // Format Bot Message
