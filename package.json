@@ -2,8 +2,9 @@
   "name": "examhelper",
   "version": "1.0.0",
   "scripts": {
+    "start": "node backend/server.js",
     "build": "cd backend && npm install",
-    "start": "cd backend && node --max-old-space-size=512 server.js"
+    "postinstall": "npm run build"
   },
   "engines": {
     "node": ">=14.0.0 <19.0.0"
