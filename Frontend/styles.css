@@ -192,7 +192,7 @@ button:active {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 100px; /* Extra padding at bottom to ensure last message is visible */
+    padding-bottom: 120px; /* Increased padding to prevent content from being hidden */
 }
 
 /* Chat Bubbles */
@@ -574,6 +574,8 @@ button:active {
     right: 0;
     z-index: 1000;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    min-height: 60px; /* Ensure minimum height */
+    padding-bottom: env(safe-area-inset-bottom); /* iOS safe area support */
 }
 
 #message-input {
@@ -1580,80 +1582,66 @@ button:active {
 @media (max-width: 768px) {
     #chat-interface {
         padding: 0;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
     }
 
+    #chat-box {
+        height: calc(100vh - 180px); /* Adjusted height */
+        padding-bottom: 100px; /* Increased padding */
+        margin-bottom: 60px; /* Space for input area */
+    }
+
+    .input-area {
+        padding: 10px;
+        height: auto;
+        min-height: 60px;
+        background: rgba(252, 228, 236, 0.98);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    #message-input {
+        height: 40px;
+        padding: 8px 15px;
+        margin: 0;
+        font-size: 16px;
+        flex: 1;
+        min-width: 0; /* Allow input to shrink */
+        width: auto; /* Let flex handle the width */
+    }
+
+    /* Fix for iOS viewport height issue */
+    @supports (-webkit-touch-callout: none) {
+        .input-area {
+            bottom: env(safe-area-inset-bottom);
+        }
+        
+        #chat-box {
+            height: calc(100vh - 180px - env(safe-area-inset-bottom));
+            padding-bottom: calc(100px + env(safe-area-inset-bottom));
+        }
+    }
+}
+
+/* Additional viewport fixes for mobile browsers */
+@media screen and (max-height: 600px) {
     #chat-box {
         height: calc(100vh - 160px);
         padding-bottom: 80px;
     }
 
-    .message {
-        max-width: 90%;
-        margin: 8px 0;
-    }
-
-    .message-content {
-        padding: 12px 16px;
-        font-size: 0.95rem;
-    }
-
     .input-area {
-        padding: 10px;
-        padding-bottom: calc(10px + env(safe-area-inset-bottom)); /* iOS safe area */
-        background: rgba(252, 228, 236, 0.95); /* Match desktop theme */
-        backdrop-filter: blur(10px);
-        border-top: 1px solid rgba(236, 64, 122, 0.3);
+        min-height: 50px;
     }
 
-    .bot-message .message-content {
-        background-color: #f8bbd0; /* Match desktop theme */
-        color: #000000;
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-        border-left: 4px solid #ec407a;
-    }
-
-    .user-message .message-content {
-        background-color: #f06292; /* Match desktop theme */
-        color: #ffffff;
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-        border-right: 4px solid #ec407a;
-    }
-
-    .input-area button {
-        width: 44px;
-        height: 44px;
-        min-width: 44px;
-    }
-
-    /* Fix for iOS viewport height issue */
-    @supports (-webkit-touch-callout: none) {
-        #chat-box {
-            height: calc(100vh - 160px - env(safe-area-inset-bottom));
-        }
-    }
-
-    /* Improve header spacing */
-    #chat-interface header {
-        padding: 10px 0;
-        margin-bottom: 10px;
-        background: linear-gradient(135deg, rgba(194, 24, 91, 0.25), rgba(236, 64, 122, 0.35));
-        border-bottom: 2px solid rgba(236, 64, 122, 0.4);
-    }
-
-    #chat-interface header h2 {
-        font-size: 1.3rem;
-        margin-bottom: 2px;
-        color: #880e4f;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    #chat-interface header p {
-        font-size: 0.85rem;
-        margin-top: 0;
-        color: #ad1457;
-        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+    #message-input {
+        height: 36px;
+        padding: 6px 12px;
     }
 }
 
