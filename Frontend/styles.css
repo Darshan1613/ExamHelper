@@ -113,8 +113,7 @@ button:active {
 
 /* Chat Header */
 #chat-interface header {
-    text-align: center;
-    padding: 20px 15px;
+    padding: 5px 10px;
     margin-bottom: 0;
     background: linear-gradient(135deg, rgba(194, 24, 91, 0.25), rgba(236, 64, 122, 0.35)); /* Gradient background */
     border-bottom: 2px solid rgba(236, 64, 122, 0.4);
@@ -135,12 +134,12 @@ button:active {
 }
 
 #chat-interface header h2 {
-    font-size: 1.5rem;
+    font-size: 1rem;
+    margin-bottom: 0;
+    letter-spacing: 0.3px;
     font-weight: bold;
     color: #880e4f; /* Darker pink */
-    margin-bottom: 4px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    letter-spacing: 0.5px;
     position: relative;
     display: inline-block;
 }
@@ -157,12 +156,12 @@ button:active {
 }
 
 #chat-interface header p {
-    font-size: 0.95rem;
+    font-size: 0.7rem;
+    margin: 0;
+    opacity: 0.8;
     color: #ad1457; /* Medium pink */
     font-weight: 500;
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
-    opacity: 0.9;
-    margin-top: 5px;
 }
 
 /* Quote Section */
@@ -185,9 +184,9 @@ button:active {
     padding: 20px;
     gap: 20px;
     background: transparent;
-    height: calc(100vh - 180px); /* Increased to account for input area */
+    height: calc(100vh - 110px); /* Increased height by reducing header space */
     margin: 0;
-    margin-bottom: 80px; /* Add margin to prevent content from being hidden behind input area */
+    margin-bottom: 60px; /* Add margin to prevent content from being hidden behind input area */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
@@ -229,10 +228,10 @@ button:active {
 }
 
 .message-content {
-    padding: 15px 20px;
+    padding: 10px 15px;
     border-radius: 15px;
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 0.9rem;
+    line-height: 1.4;
     word-wrap: break-word;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     max-width: 75%;
@@ -650,7 +649,9 @@ button:active {
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .message-content {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        padding: 8px 12px;
+        line-height: 1.35;
     }
 
     .input-area button {
@@ -1591,25 +1592,25 @@ button:active {
     }
 
     #chat-box {
-        height: calc(100vh - 180px); /* Adjusted height */
+        height: calc(100vh - 100px);
         padding-bottom: 100px; /* Increased padding */
         margin-bottom: 60px; /* Space for input area */
     }
 
     .input-area {
-        padding: 10px;
+        padding: 8px;
         height: auto;
-        min-height: 60px;
+        min-height: 45px;
         background: rgba(252, 228, 236, 0.98);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
     }
 
     #message-input {
-        height: 40px;
-        padding: 8px 15px;
+        height: 35px;
+        padding: 5px 12px;
         margin: 0;
-        font-size: 16px;
+        font-size: 0.9rem;
         flex: 1;
         min-width: 0; /* Allow input to shrink */
         width: auto; /* Let flex handle the width */
@@ -1622,7 +1623,7 @@ button:active {
         }
         
         #chat-box {
-            height: calc(100vh - 180px - env(safe-area-inset-bottom));
+            height: calc(100vh - 100px - env(safe-area-inset-bottom));
             padding-bottom: calc(100px + env(safe-area-inset-bottom));
         }
     }
@@ -1655,5 +1656,76 @@ button:active {
 
     .input-area {
         touch-action: none; /* Prevent scrolling when touching input area */
+    }
+}
+
+/* Mobile-specific adjustments - Updated for better space utilization */
+@media (max-width: 768px) {
+    /* Header adjustments */
+    #chat-interface header {
+        padding: 4px 8px;
+    }
+
+    #chat-interface header h2 {
+        font-size: 0.95rem;
+    }
+
+    #chat-interface header p {
+        font-size: 0.65rem;
+    }
+
+    /* Chat box adjustments */
+    #chat-box {
+        height: calc(100vh - 100px); /* Reduced to account for smaller header */
+        padding: 8px 5px;
+        margin-bottom: 50px;
+    }
+
+    /* Message content adjustments */
+    .message-content {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        line-height: 1.35;
+    }
+
+    .message {
+        gap: 6px;
+        margin: 6px 0;
+    }
+
+    /* Avatar size reduction */
+    .message img {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* Input area adjustments */
+    .input-area {
+        min-height: 50px;
+        padding: 8px 10px;
+    }
+
+    #message-input {
+        height: 36px;
+        padding: 6px 12px;
+        font-size: 0.95rem;
+    }
+
+    /* iOS specific adjustments */
+    @supports (-webkit-touch-callout: none) {
+        #chat-box {
+            height: calc(100vh - 100px - env(safe-area-inset-bottom));
+        }
+    }
+}
+
+/* Smaller screen optimization */
+@media screen and (max-height: 600px) {
+    #chat-interface header {
+        padding: 6px 10px;
+    }
+
+    #chat-box {
+        height: calc(100vh - 120px);
     }
 }
