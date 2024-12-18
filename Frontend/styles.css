@@ -104,23 +104,22 @@ button:active {
     height: 100vh;
     width: 100vw;
     background: rgba(30, 30, 47, 0.95);
-    padding: 10px;
+    padding: 20px 10px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-    border-radius: 0;
-    height: 100%;
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     right: 0;
-    display: none;
 }
 
 /* Chat Header */
 #chat-interface header {
     text-align: center;
-    margin-bottom: 10px;
+    padding: 15px 0;
+    margin-bottom: 20px;
     color: #e0e0e0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #chat-interface header h2 {
@@ -152,7 +151,7 @@ button:active {
 #chat-box {
     flex: 1;
     overflow-y: auto;
-    padding: 10px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     gap: 15px;

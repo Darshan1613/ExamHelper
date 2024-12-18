@@ -120,25 +120,6 @@ const splitAndFormatResponse = (response) => {
     return responseParts;
 };
 
-// Generate Motivational Quote Endpoint - Using GPT-4o
-app.get('/generate-quote', async (req, res) => {
-    try {
-        const response = await openai.chat.completions.create({
-            model: 'gpt-4o',
-            messages: [
-                { role: 'system', content: 'You are a motivational assistant. Generate an inspiring quote related to studying and perseverance.' },
-            ],
-            max_tokens: 100, // Limit token size for quotes
-        });
-
-        const quote = response.choices[0].message.content.trim();
-        res.status(200).json({ quote });
-    } catch (error) {
-        console.error('Error generating quote:', error);
-        res.status(500).json({ error: 'Failed to generate a motivational quote' });
-    }
-});
-
 // Clear Chat History Endpoint
 app.delete('/clear-history', (req, res) => {
     chatHistory = [];
@@ -164,7 +145,7 @@ const analyzeImage = async (imagePath, mimetype) => {
     const imageUrl = `data:${mimetype};base64,${base64Image}`;
     
     const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4o",
         messages: [
             {
                 role: "user",
