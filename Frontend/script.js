@@ -14,18 +14,6 @@ const fileBtn = document.getElementById('file-btn');
 // Backend URL (set to localhost for development)
 const API_URL = 'https://examhelper-backend.onrender.com'; // Change to production URL when deploying
 
-// Fetch and Display a Motivational Quote
-const fetchMotivationalQuote = async () => {
-    try {
-        const response = await fetch(`${API_URL}/generate-quote`);
-        const data = await response.json();
-        quoteText.textContent = `"${data.quote}"`;
-    } catch (error) {
-        console.error('Error fetching motivational quote:', error);
-        quoteText.textContent = '"Stay focused and keep learning!"';
-    }
-};
-
 // PIN Input Handling
 pinInputs.forEach((input, index) => {
     input.addEventListener('input', () => {
@@ -47,7 +35,7 @@ unlockBtn.addEventListener('click', () => {
     if (pin === '1234') {
         lockScreen.style.display = 'none';
         chatInterface.style.display = 'flex';
-        fetchMotivationalQuote();
+        // Remove fetchMotivationalQuote() call
     } else {
         pinError.textContent = 'Incorrect PIN. Please try again.';
     }
