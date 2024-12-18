@@ -1,0 +1,13 @@
+{
+  "name": "examhelper",
+  "version": "1.0.0",
+  "scripts": {
+    "install-backend": "cd backend && npm install",
+    "start-backend": "cd backend && npm start",
+    "build": "npm run install-backend",
+    "start": "npm run start-backend"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
