@@ -1409,3 +1409,56 @@ button:active {
         transform: translateY(0);
     }
 }
+
+/* Lock Screen Mobile Adjustments */
+@media (max-width: 768px) {
+    #lock-screen {
+        width: 85%;
+        max-width: 320px;
+        padding: 20px;
+    }
+
+    #lock-screen h1 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .helper-text {
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+    }
+
+    .pin-inputs {
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .pin-box {
+        width: 45px;
+        height: 45px;
+        font-size: 1.5rem;
+    }
+
+    #unlock-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        margin-top: 10px;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+    }
+
+    #unlock-btn:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Add explicit touch handling for mobile */
+@media (hover: none) {
+    #unlock-btn {
+        cursor: pointer;
+        touch-action: manipulation;
+    }
+}
