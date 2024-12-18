@@ -121,22 +121,12 @@ button:active {
     text-align: center;
     margin-bottom: 10px;
     color: #e0e0e0;
-    padding: 10px 0;
-    margin-bottom: 5px;
-    background: rgba(30, 30, 47, 0.95);
-    padding: 15px 0 10px 0;
-    margin-bottom: 0;
-    background: rgba(30, 30, 47, 0.98);
 }
 
 #chat-interface header h2 {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: bold;
-    background: linear-gradient(45deg, #4caf50, #45a049);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 2px;
+    color: #f0a500;
 }
 
 #chat-interface header p {
@@ -144,9 +134,18 @@ button:active {
     color: #ccc;
 }
 
-/* Remove quote section styles */
+/* Quote Section */
 #quote-section {
-    display: none;
+    width: 100%;
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #f0f0f0;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    font-style: italic;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Chat Box */
@@ -163,11 +162,6 @@ button:active {
     padding-bottom: 70px; /* Add padding to prevent last message from being hidden */
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     margin-bottom: 60px;
-    height: calc(100vh - 180px);
-    padding-bottom: 85px;
-    margin-bottom: 0;
-    height: calc(100vh - 120px); /* Reduced from previous value */
-    padding-bottom: 70px;
 }
 
 /* Chat Bubbles */
@@ -1563,38 +1557,5 @@ button:active {
 
     .input-area {
         touch-action: none; /* Prevent scrolling when touching input area */
-    }
-}
-
-/* Mobile Optimizations */
-@media (max-width: 768px) {
-    #chat-box {
-        height: calc(100vh - 110px);
-        padding-bottom: 60px;
-    }
-
-    #quote-section {
-        padding: 8px 12px;
-        font-size: 0.9rem;
-        margin: 8px 10px;
-    }
-
-    #chat-interface header {
-        padding: 8px 0 5px 0;
-    }
-
-    #chat-interface header h2 {
-        font-size: 1.3rem;
-    }
-
-    #chat-interface header p {
-        font-size: 0.8rem;
-        opacity: 0.8;
-    }
-
-    .input-area {
-        padding: 8px 10px;
-        background: rgba(30, 30, 47, 0.98);
-        backdrop-filter: blur(10px);
     }
 }
