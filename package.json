@@ -2,8 +2,8 @@
   "name": "examhelper",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd backend && npm install",
-    "start": "node backend/server.js"
+    "build": "cd Backend && npm install",
+    "start": "node Backend/server.js"
   },
   "engines": {
     "node": ">=14.0.0 <19.0.0"
