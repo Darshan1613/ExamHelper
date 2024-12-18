@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "cd backend && npm install",
-    "start": "npm run start-backend",
-    "start-backend": "cd backend && npm start"
+    "start": "cd backend && npm start"
   },
   "engines": {
     "node": ">=14.0.0 <19.0.0"
