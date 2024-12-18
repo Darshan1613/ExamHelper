@@ -12,7 +12,7 @@ const fileInput = document.getElementById('file-input');
 const fileBtn = document.getElementById('file-btn');
 
 // Backend URL (set to localhost for development)
-const API_URL = 'http://localhost:3000'; // Change to production URL when deploying
+const API_URL = 'https://examhelper-backend.onrender.com'; // Change to production URL when deploying
 
 // Fetch and Display a Motivational Quote
 const fetchMotivationalQuote = async () => {
