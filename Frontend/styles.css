@@ -107,6 +107,13 @@ button:active {
     padding: 10px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
     border-radius: 0;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: none;
 }
 
 /* Chat Header */
@@ -151,6 +158,9 @@ button:active {
     gap: 15px;
     background: rgba(30, 30, 47, 0.9);
     border-radius: 12px;
+    height: calc(100vh - 180px); /* Adjust for header and input area */
+    padding-bottom: 20px;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 /* Chat Bubbles */
@@ -497,6 +507,13 @@ button:active {
     gap: 10px;
     padding: 10px;
     border-top: 1px solid #555;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(30, 30, 47, 0.95);
+    padding: 10px 15px;
+    z-index: 1000;
 }
 
 .input-area input {
@@ -1460,5 +1477,50 @@ button:active {
     #unlock-btn {
         cursor: pointer;
         touch-action: manipulation;
+    }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+    #chat-interface {
+        padding: 5px;
+    }
+
+    #chat-box {
+        height: calc(100vh - 160px);
+        margin-bottom: 60px;
+    }
+
+    .input-area {
+        padding: 8px 10px;
+        gap: 8px;
+    }
+
+    #message-input {
+        height: 40px;
+        padding: 8px 15px;
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+
+    .input-area button {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    /* Fix for iOS viewport height issue */
+    @supports (-webkit-touch-callout: none) {
+        #chat-box {
+            height: calc(100vh - 180px - env(safe-area-inset-bottom));
+        }
+        
+        .input-area {
+            padding-bottom: calc(8px + env(safe-area-inset-bottom));
+        }
+    }
+
+    /* Prevent pull-to-refresh */
+    body {
+        overscroll-behavior-y: contain;
     }
 }
